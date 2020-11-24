@@ -1,0 +1,12 @@
+﻿[
+  {
+    "UserName": "level1",
+    "SecurityLevel": 1,
+    "Password": "12345"
+  },
+  {
+    "UserName": "level2",
+    "SecurityLevel": 2,
+    "Password": "98765"
+  }
+]

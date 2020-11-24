@@ -1,0 +1,99 @@
+﻿@page "/EditAdult"
+@using Assignment1.Data
+@using Models
+@using System.Threading
+@inject IAdultService Persistence
+@inject NavigationManager NavigationManager
+
+<h3>Edit adult</h3>
+<label>Fill in all of the fields</label>
+
+<p>
+    Adult id: <input type="number" @oninput="@((arg) => GetAdultToEdit(arg))" style="width:50px"/>
+</p>
+
+<EditForm Model="@adultToEdit" OnValidSubmit="@UpdateAdult">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <div class="form-group">
+        First name:<br/>
+        <InputText @bind-Value="adultToEdit.FirstName"/>
+    </div>
+    <div class="form-group">
+        Last name:<br/>
+        <InputText @bind-Value="adultToEdit.LastName"/>
+    </div>
+    <div class="form-group">
+        Job title:<br/>
+        <InputText @bind-Value="adultToEdit.JobTitle"/>
+    </div>
+    <div class="form-group">
+        Hair color:<br/>
+        <InputText @bind-Value="adultToEdit.HairColor"/>
+    </div>
+    <div class="form-group">
+        Eye color:<br/>
+        <InputText @bind-Value="adultToEdit.EyeColor"/>
+    </div>
+    <div class="form-group">
+        Age:<br/>
+        <InputNumber @bind-Value="adultToEdit.Age"/>
+    </div>
+    <div class="form-group">
+        Weight:<br/>
+        <InputNumber @bind-Value="adultToEdit.Weight"/>
+    </div>
+    <div class="form-group">
+        Height:<br/>
+        <InputNumber @bind-Value="adultToEdit.Height"/>
+    </div>
+    <div class="form-group">
+        Sex:<br/>
+        <InputSelect @bind-Value="adultToEdit.Sex">
+            <option value="">Select sex ...</option>
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+        </InputSelect>
+    </div>
+    <p class="actions">
+        <button class="btn btn-outline-dark" type="submit">Update</button>
+    </p>
+</EditForm>
+
+@code {
+    private Adult adultToEdit = new Adult();
+    private IList<Adult> allAdults = new List<Adult>();
+    private int? id;
+
+    protected override async Task OnInitializedAsync()
+    {
+        allAdults = await Persistence.ReadAllAdultsAsync(id, null, null);
+    }
+    
+    private void UpdateAdult()
+    {
+        Persistence.UpdateAdultAsync(adultToEdit);
+        Thread.Sleep(10); //secret tool, shh
+        NavigationManager.NavigateTo("/ViewAdults");
+    }
+
+    private void GetAdultToEdit(ChangeEventArgs eventArgs)
+    {
+        id = null;
+        try
+        {
+            id = int.Parse(eventArgs.Value.ToString());
+        }
+        catch (Exception e)
+        {
+        }
+        adultToEdit = new Adult();
+        foreach (var adult in allAdults)
+        {
+            if (adult.Id == id)
+            {
+                adultToEdit = adult;
+            }
+        }
+    }
+}
